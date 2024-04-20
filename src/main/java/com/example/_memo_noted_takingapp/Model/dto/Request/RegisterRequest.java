@@ -26,7 +26,6 @@ public class RegisterRequest {
     @NotBlank
     private String confirmPassword;
     @NotNull
-
     private Gender gender;
     @NotNull
     @NotBlank

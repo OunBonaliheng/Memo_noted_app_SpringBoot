@@ -2,6 +2,7 @@ package com.example._memo_noted_takingapp.Controller;
 import com.example._memo_noted_takingapp.Model.Tags;
 import com.example._memo_noted_takingapp.Model.dto.Request.TagsRequest;
 import com.example._memo_noted_takingapp.Model.dto.Response.APIResponse;
+import com.example._memo_noted_takingapp.Model.dto.Response.TagResponse;
 import com.example._memo_noted_takingapp.Repositority.TagsRepo;
 import com.example._memo_noted_takingapp.Service.TagsService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 @RestController
@@ -42,8 +44,8 @@ public class TagController {
                         HttpStatus.OK, new Date()));
     }
     @GetMapping("{id}")
-    public ResponseEntity<APIResponse<Tags>> getTagById(@PathVariable Integer id) {
-        Tags tags = tagsService.getTagsById(id);
+    public ResponseEntity<APIResponse<TagResponse>> getTagById(@PathVariable Integer id) {
+        TagResponse tags = tagsService.getTagsById(id);
         System.out.println(tags);
         return ResponseEntity.status(HttpStatus.OK).body(
                 new APIResponse<>(
@@ -79,9 +81,11 @@ public class TagController {
         }
     }
     @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteTag(@PathVariable Integer id) {
+    public ResponseEntity<APIResponse<String>> deleteTag(@PathVariable Integer id) {
         String message =  tagsService.deleteTag(id);
         System.out.println(message);
-        return ResponseEntity.status(HttpStatus.OK).body(message);
+        return ResponseEntity.status(HttpStatus.OK).body(new APIResponse<>(
+                "Tage with ID: "+id+ " is Delete Successfully", null, HttpStatus.OK, new Date()
+        ));
     }
 }

@@ -60,11 +60,12 @@ public class UserServiceImpl implements UserService {
         registerRequest.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         String otpCode = otpUtil.generateOtp();
         User user = new User();
-        user.setUsername(registerRequest.getUsername());
+        user.setName(registerRequest.getUsername());
         user.setEmail(registerRequest.getEmail());
         user.setPassword(registerRequest.getPassword());
         user.setGender(gender);
         user.setProfileImage(registerRequest.getProfileImage());
+        System.out.println(user);
         User savedUser = userRepository.save(user);
 
         Otp otp = new Otp();
@@ -74,7 +75,7 @@ public class UserServiceImpl implements UserService {
         otp.setExpirationTime(calculateExpirationTime());
         otpRepository.insertOtp(otp);
         emailUtil.sendOtpEmail(savedUser.getEmail(), otpCode);
-        return new UserResponse(savedUser.getUserId(), registerRequest.getUsername(), savedUser.getEmail(), savedUser.getGender(), savedUser.getProfileImage());
+        return new UserResponse(savedUser.getUserId(), savedUser.getName(), savedUser.getEmail(), savedUser.getGender(), savedUser.getProfileImage());
     }
 
 
@@ -165,17 +166,14 @@ public class UserServiceImpl implements UserService {
         return new Timestamp(expirationTimeMillis);
     }
     @Override
-    public String getUsernameOfCurrentUser() {
-            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
-                    .getPrincipal();
-            String username = userDetails.getUsername();
-            System.out.println(username);
-            return username;
+    public Long getUsernameOfCurrentUser() {
+        User userDetails = (User) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        Long userId = userDetails.getUserId();
+        System.out.println(userId);
+        return userId;
     }
 
-    @Override
-    public User getUserCurrentByEmail(String email) {
-        return userRepository.getUserByEmail(email);
-    }
+
 
 }

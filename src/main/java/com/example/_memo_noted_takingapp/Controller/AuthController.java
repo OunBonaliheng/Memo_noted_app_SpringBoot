@@ -12,6 +12,7 @@ import com.example._memo_noted_takingapp.Model.dto.Response.UserResponse;
 import com.example._memo_noted_takingapp.Service.UserService;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,7 +28,12 @@ public class AuthController {
     private final UserService userService;
     @PostMapping("/register")
     public ResponseEntity<APIResponse<UserResponse>> register(@RequestBody @Valid RegisterRequest registerRequest) throws MessagingException  {
-        if (!isValidPassword(registerRequest.getPassword())) throw new InvalidInputException("Password must be at least 8 characters long and contain at least one digit, one letter, and one special character.");
+        if (!isValidPassword(registerRequest.getPassword())) {
+            throw new InvalidInputException("Password must be at least 8 characters long and contain at least one digit, one letter, and one special character.");
+        }
+        if (!registerRequest.getEmail().endsWith("@gmail.com")) {
+            throw new InvalidInputException("Only Gmail addresses are allowed for registration.");
+        }
         UserResponse userResponse = userService.register(registerRequest);
         System.out.println(userResponse);
         System.out.println(registerRequest);
@@ -35,6 +41,7 @@ public class AuthController {
                 "Please Check Email for Verify OTP Code", userResponse, HttpStatus.CREATED,new Date()
         ));
     }
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid LoginRequest loginRequest) {
         AuthResponse response = userService.login(loginRequest);
@@ -63,17 +70,7 @@ public class AuthController {
         UserResponse user  = userService.forgetPassword(forgetRequest, email);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
-    @GetMapping("/profile")
-    public ResponseEntity<?> getUserProfile() {
-        String currentUserEmail = userService.getUsernameOfCurrentUser();
-        User userProfile = userService.getUserCurrentByEmail(currentUserEmail);
-        if (userProfile != null) {
-            return ResponseEntity.ok(userProfile);
-        }
-        return ResponseEntity.badRequest().body(new APIResponse<>(
-                "You are not logged in", null, HttpStatus.BAD_REQUEST, new Date()
-        ));
-    }
+
 
 
     public static boolean isValidPassword(String password) {

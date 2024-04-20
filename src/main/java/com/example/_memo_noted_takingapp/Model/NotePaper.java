@@ -1,5 +1,6 @@
 package com.example._memo_noted_takingapp.Model;
 
+import com.example._memo_noted_takingapp.Model.dto.Response.UserResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,7 +20,8 @@ public class NotePaper {
     private Date creationDate = new Date();
     private String selectColor;
     private List<Tags> tagsLists;
-    private List<Files> files;
+    private List<FilesImgVideo> receiveFiles;
+    private UserResponse users;
 
     public String getCreationDate() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");

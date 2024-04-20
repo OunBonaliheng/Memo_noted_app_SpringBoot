@@ -10,45 +10,44 @@ import java.util.List;
 public interface NotePaperRepo {
      // Get all notes
      @Select("""
-        SELECT * FROM note_tb ORDER BY noted_id
+        SELECT * FROM note_tb WHERE user_id =#{userId} ORDER BY noted_id
     """)
      @Results(id = "NoteMapper", value = {
              @Result(property = "notedId", column = "noted_id"),
              @Result(property = "title", column = "title"),
-             @Result(property = "tagName",column = "tag_name"),
              @Result(property = "creationDate", column = "creation_date"),
              @Result(property = "selectColor", column = "select_color"),
              @Result(property = "note_content", column = "note_content"),
              @Result(property = "note_description", column = "note_description"),
-             @Result(property = "receiveImg", column = "receive_img"),
-             @Result(property = "receiveVideo", column = "receive_video"),
-             @Result(property = "tagsLists", column = "noted_id",many = @Many(select = "com.example._memo_noted_takingapp.Repositority.TagsRepo.findNoteWithTags")),
+             @Result(property = "receiveFiles", column = "noted_id", many = @Many(select = "com.example._memo_noted_takingapp.Repositority.ImgVideoRepo.findImgVideoByNoteId")),
+             @Result(property = "users", column = "user_id", one = @One(select = "com.example._memo_noted_takingapp.Repositority.UserRepository.getUserById")),
+             @Result(property = "tagsLists", column = "noted_id", many = @Many(select = "com.example._memo_noted_takingapp.Repositority.Tags_noteRepo.findTagsByNoteId")),
      })
-     List<NotePaper> findAllNotes();
+     List<NotePaper> findAllNotes(Long userId);
 
      // Get note by id
      @Select("""
-        SELECT * FROM note_tb WHERE noted_id = #{id}
+        SELECT * FROM note_tb WHERE noted_id = #{id} AND user_id =#{userId} ORDER BY noted_id
     """)
      @ResultMap("NoteMapper")
-     NotePaper findNotesById(Integer id);
+     NotePaper findNotesById(Integer id, Long userId);
 
      // Insert note
      @Select("""
-        INSERT INTO note_tb (title,note_content,note_description,creation_date, select_color, receive_img, receive_video)
-        VALUES (#{Note.title},#{Note.note_content},#{Note.note_description},#{Note.creationDate}, #{Note.selectColor}, #{Note.receiveImg}, #{Note.receiveVideo})
+        INSERT INTO note_tb (title,note_content,note_description,creation_date, select_color,user_id)
+        VALUES (#{Note.title},#{Note.note_content},#{Note.note_description},#{Note.creationDate}, #{Note.selectColor},#{userId})
         RETURNING *;
     """)
      @ResultMap("NoteMapper")
-     NotePaper createNote(@Param("Note") NotePaperRequest notePaperRequest);
+     NotePaper createNote(@Param("Note") NotePaperRequest notePaperRequest, Long userId);
 
      // Update note by id
      @Select("""
-        UPDATE note_tb SET title = #{note.title},note_content =#{note.note_content},note_description = #{note.note_description} ,creation_date = #{note.creationDate}, select_color = #{note.selectColor}, receive_img = #{note.receiveImg}, receive_video = #{note.receiveVideo}
+        UPDATE note_tb SET title = #{note.title},note_content =#{note.note_content},note_description = #{note.note_description} ,creation_date = #{note.creationDate}, select_color = #{note.selectColor},  filesimgvideo = #{note.filesimgvideo},user_id=#{userId}
         WHERE noted_id = #{id} RETURNING *;
     """)
      @ResultMap("NoteMapper")
-     NotePaper updateNotes(@Param("id") Integer id, @Param("note") NotePaperRequest notePaperRequest);
+     NotePaper updateNotes(@Param("id") Integer id, @Param("note") NotePaperRequest notePaperRequest, Long userId);
 
      // Delete note by id
      @Delete("""

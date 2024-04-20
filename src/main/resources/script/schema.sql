@@ -5,21 +5,34 @@ CREATE TABLE note_tb (
                          note_description VARCHAR(500),
                          creation_date TIMESTAMP,
                          select_color VARCHAR(50),
-                         receive_img VARCHAR(255),
-                         receive_video VARCHAR(255)
+                         user_id INT,
+                         FOREIGN KEY (user_id) REFERENCES user_tb (user_id) ON UPDATE CASCADE ON DELETE CASCADE
+
 );
 CREATE TABLE files(
                       file_id SERIAL PRIMARY KEY ,
-                      noted_id int,
-                      receive_img VARCHAR(255),
-                      receive_video VARCHAR(255),
+                      noted_id INT,
+                      receiveFiles VARCHAR(255),
                       FOREIGN KEY (noted_id) REFERENCES note_tb (noted_id) ON UPDATE CASCADE ON DELETE CASCADE
+
 );
+
+SELECT * FROM note_tb INNER JOIN files f on note_tb.noted_id = f.noted_id WHERE f.noted_id=26;
+
+
 CREATE TABLE tags_tb (
 
                          tag_id SERIAL PRIMARY KEY,
-                         tag_name VARCHAR(255)
+                         tag_name VARCHAR(255),
+                         user_id INT,
+                         FOREIGN KEY (user_id) REFERENCES user_tb (user_id) ON UPDATE CASCADE ON DELETE CASCADE
 );
+
+
+SELECT *
+FROM note_tb AS n
+         INNER JOIN tag_note AS tn ON n.noted_id = tn.noted_id
+         INNER JOIN tags_tb AS t ON tn.tag_id = t.tag_id ;
 
 CREATE TABLE tag_note (
                           Id SERIAL PRIMARY KEY,
@@ -64,3 +77,21 @@ CREATE TABLE otp_tb(
 --
 -- INSERT INTO user_tb (userName, email, password, gender)
 -- VALUES ('adwdaw', 'dawdawd', 'dawd', 'dawd') RETURNING *;
+
+-- INSERT INTO tags_tb (tag_name)
+-- VALUES
+--     ('Tag 1'),
+--     ('Tag 2'),
+--     ('Tag 3'),
+--     ('Tag 4'),
+--     ('Tag 5');
+--
+-- INSERT INTO note_tb (title, note_content, note_description, creation_date, select_color, filesimgvideo)
+-- VALUES
+--     ('Title 1', 'Content 1', 'Description 1', '2024-04-07 10:00:00', 'Color 1', 'ImageVideo 1'),
+--     ('Title 2', 'Content 2', 'Description 2', '2024-04-07 11:00:00', 'Color 2', 'ImageVideo 2'),
+--     ('Title 3', 'Content 3', 'Description 3', '2024-04-07 12:00:00', 'Color 3', 'ImageVideo 3'),
+--     ('Title 4', 'Content 4', 'Description 4', '2024-04-07 13:00:00', 'Color 4', 'ImageVideo 4'),
+--     ('Title 5', 'Content 5', 'Description 5', '2024-04-07 14:00:00', 'Color 5', 'ImageVideo 5');
+
+SELECT t.tag_name FROM tags_tb t  INNER JOIN tag_note tn ON tn.tag_id = t.tag_id  WHERE tn.noted_id = 26

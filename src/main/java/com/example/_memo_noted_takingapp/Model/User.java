@@ -17,6 +17,7 @@ import java.util.Collections;
 public class User implements UserDetails {
     private Long userId;
     private String username;
+    private String name;
     private String email;
     private String password;
     private Gender gender;
@@ -35,6 +36,8 @@ public class User implements UserDetails {
     public String getPassword() {
         return password;
     }
+
+
 
     @Override
     public boolean isAccountNonExpired() {

@@ -1,6 +1,5 @@
 package com.example._memo_noted_takingapp.Model.dto.Request;
 
-import com.example._memo_noted_takingapp.Model.Files;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +14,7 @@ public class NotePaperRequest {
     private String note_content;
     private String note_description;
     private Date creationDate;
-    List<Integer> tagsLists;
+    private List<Integer> tagsLists;
     private String selectColor;
-    private List<Files> files;
+    private List<String> receiveFiles;
 }

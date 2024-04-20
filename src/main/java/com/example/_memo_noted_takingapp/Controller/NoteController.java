@@ -105,9 +105,11 @@ public class NoteController {
         }
     }
     @DeleteMapping("{id}")
-    public ResponseEntity<String> removeNote(@PathVariable @Valid @Positive(message = "must be greater than 0") Integer id) {
+    public ResponseEntity<APIResponse<String>> removeNote(@PathVariable @Valid @Positive(message = "must be greater than 0") Integer id) {
        String message =  notePaperService.deleteNote(id);
         System.out.println(message);
-       return ResponseEntity.status(HttpStatus.OK).body(message);
+       return ResponseEntity.status(HttpStatus.OK).body(new APIResponse<>(
+               "Note with Id: " + id + " successfully deleted",null,HttpStatus.OK,new Date()
+       ));
     }
 }
