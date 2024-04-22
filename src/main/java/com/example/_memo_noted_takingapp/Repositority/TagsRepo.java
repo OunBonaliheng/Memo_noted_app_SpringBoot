@@ -55,20 +55,20 @@ public interface TagsRepo {
     //update tag By id
     @Select("""
         UPDATE tags_tb SET tag_name = #{update.tagName}
-        WHERE tag_id = #{id}  RETURNING *;
+        WHERE tag_id = #{id} AND user_id =#{userId}  RETURNING *;
     """)
     @ResultMap("TagMapper")
-    Tags updateTag(@Param("id") Integer id, @Param("update") TagsRequest tagsRequest);
+    Tags updateTag(@Param("id") Integer id, @Param("update") TagsRequest tagsRequest,Long userId);
 
     //Delete tag by Id
     @Delete("""
-        DELETE FROM tags_tb WHERE tag_id = #{id};
+        DELETE FROM tags_tb WHERE tag_id = #{id} AND user_id =#{userId};
     """)
     @ResultMap("TagMapper")
-    Boolean deleteTag(Integer id);
+    Boolean deleteTag(Integer id, Long userId);
 
     //search filter tag
-    @Select("SELECT * FROM tags_tb WHERE LOWER(tag_name) LIKE CONCAT('%', LOWER(#{tagname}), '%')")
+    @Select("SELECT * FROM tags_tb WHERE  LOWER(tag_name) LIKE CONCAT('%', LOWER(#{tagname}), '%') AND user_id =#{userId}")
     @ResultMap("TagMapper")
-    List<Tags> findTagsname(String tagname);
+    List<Tags> findTagsname(String tagname, Long userId);
 }

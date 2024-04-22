@@ -44,17 +44,19 @@ public class Tagsimpl implements TagsService {
 
     @Override
     public Tags updateTag(Integer id, TagsRequest tagsRequest) {
-        Tags tags = tagsRepo.updateTag(id,tagsRequest);
+        long userId = userServiceImple.getUsernameOfCurrentUser();
+        Tags tags = tagsRepo.updateTag(id,tagsRequest,userId);
+
         if (tags == null) {
             throw new NotFoundException("The Tags with Id " + id + " is not found for update.");
         }
-        return tagsRepo.updateTag(id,tagsRequest);
+        return tagsRepo.updateTag(id,tagsRequest,userId);
     }
 
 
     @Override
     public String deleteTag(Integer id) {
-        Boolean isSuccess = tagsRepo.deleteTag(id);
+        Boolean isSuccess = tagsRepo.deleteTag(id,userServiceImple.getUsernameOfCurrentUser());
         if (!isSuccess) {
             throw new NotFoundException("Tag with Id: " + id + " is not found for delete.");
         }
@@ -63,6 +65,7 @@ public class Tagsimpl implements TagsService {
 
     @Override
     public List<Tags> getTagsByname(String tagname) {
-        return tagsRepo.findTagsname(tagname);
+        long userId = userServiceImple.getUsernameOfCurrentUser();
+        return tagsRepo.findTagsname(tagname,userId);
     }
 }

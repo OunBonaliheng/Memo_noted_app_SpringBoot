@@ -47,16 +47,17 @@ public interface NotePaperRepo {
         WHERE noted_id = #{id} RETURNING *;
     """)
      @ResultMap("NoteMapper")
-     NotePaper updateNotes(@Param("id") Integer id, @Param("note") NotePaperRequest notePaperRequest, Long userId);
+     //@Param("id")
+     NotePaper updateNotes(Integer id, @Param("note") NotePaperRequest notePaperRequest, Long userId);
 
      // Delete note by id
      @Delete("""
-        DELETE FROM note_tb WHERE noted_id = #{id}
+        DELETE FROM note_tb WHERE noted_id = #{id} AND user_id =#{userId}
     """)
      @ResultMap("NoteMapper")
-     Boolean deleteNote(Integer id);
+     Boolean deleteNote(Integer id,Long userId);
 
-     @Select("SELECT * FROM note_tb WHERE LOWER(title) LIKE CONCAT('%', LOWER(#{title}), '%')")
+     @Select("SELECT * FROM note_tb WHERE LOWER(title) LIKE CONCAT('%', LOWER(#{title}), '%') AND user_id =#{userId}")
      @ResultMap("NoteMapper")
-     List<NotePaper> searchTitleIgnoreCase(String title);
+     List<NotePaper> searchTitleIgnoreCase(String title,Long userId);
 }

@@ -75,7 +75,8 @@ public class NotePaperimpl implements NotePaperService {
 
     @Override
     public String deleteNote(Integer id) {
-        Boolean isSuccess = notePaperRepo.deleteNote(id);
+        Long userId = userServiceImpl.getUsernameOfCurrentUser();
+        Boolean isSuccess = notePaperRepo.deleteNote(id,userId);
         if (!isSuccess) {
             throw new NotFoundException("Note with Id: " + id + " is not found");
         }

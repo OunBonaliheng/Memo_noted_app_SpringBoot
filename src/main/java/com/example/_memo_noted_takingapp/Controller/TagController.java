@@ -1,11 +1,15 @@
 package com.example._memo_noted_takingapp.Controller;
+import com.example._memo_noted_takingapp.Exception.NotFoundException;
 import com.example._memo_noted_takingapp.Model.Tags;
 import com.example._memo_noted_takingapp.Model.dto.Request.TagsRequest;
 import com.example._memo_noted_takingapp.Model.dto.Response.APIResponse;
 import com.example._memo_noted_takingapp.Model.dto.Response.TagResponse;
 import com.example._memo_noted_takingapp.Repositority.TagsRepo;
 import com.example._memo_noted_takingapp.Service.TagsService;
+import com.example._memo_noted_takingapp.Service.UserService;
+import com.example._memo_noted_takingapp.Service.serviceimpl.UserServiceImpl;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,13 +21,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/memo/tags/")
 @SecurityRequirement(name = "bearerAuth")
+@AllArgsConstructor
 public class TagController {
     private final TagsService tagsService;
     private final TagsRepo tagsRepo;
-    public TagController(TagsService tagsService, TagsRepo tagsRepo) {
-        this.tagsService = tagsService;
-        this.tagsRepo = tagsRepo;
-    }
+   private final UserServiceImpl userService;
 
     @PostMapping
     public ResponseEntity<APIResponse<Tags>> addTags(@RequestBody TagsRequest tagsRequest) {
@@ -68,12 +70,11 @@ public class TagController {
 
     @GetMapping("tagName/{tagname}")
     public ResponseEntity<APIResponse<List<Tags>>> getTagByTagName(@PathVariable String tagname) {
-        List<Tags> tags =  tagsRepo.findTagsname(tagname);
+        Long userId = userService.getUsernameOfCurrentUser();
+        List<Tags> tags =  tagsRepo.findTagsname(tagname,userId);
         System.out.println(tags);
         if (tags.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new APIResponse<>("No tags found with the tagname: " + tagname, null, HttpStatus.NOT_FOUND,  new Date())
-            );
+            throw new NotFoundException("No tags found with the tagname: "+ tagname);
         } else {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new APIResponse<>("Search tag successful", tags, HttpStatus.OK,  new Date())

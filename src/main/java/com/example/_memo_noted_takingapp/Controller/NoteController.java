@@ -6,6 +6,8 @@ import com.example._memo_noted_takingapp.Repositority.NotePaperRepo;
 import com.example._memo_noted_takingapp.Repositority.Tags_noteRepo;
 import com.example._memo_noted_takingapp.Service.NotePaperService;
 
+import com.example._memo_noted_takingapp.Service.UserService;
+import com.example._memo_noted_takingapp.Service.serviceimpl.UserServiceImpl;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -23,11 +25,13 @@ import java.util.List;
 public class NoteController {
     private final NotePaperService notePaperService;
     private final Tags_noteRepo tags_noteRepo;
+    private final UserServiceImpl userService;
     Date currentDate = new Date();
     private final NotePaperRepo notePaperRepo;
-    public NoteController(NotePaperService notePaperService, Tags_noteRepo tagsNoteRepo, NotePaperRepo notePaperRepo) {
+    public NoteController(NotePaperService notePaperService, Tags_noteRepo tagsNoteRepo, UserServiceImpl userService, NotePaperRepo notePaperRepo) {
         this.notePaperService = notePaperService;
         tags_noteRepo = tagsNoteRepo;
+        this.userService = userService;
         this.notePaperRepo = notePaperRepo;
     }
     @GetMapping
@@ -47,7 +51,8 @@ public class NoteController {
     }
     @GetMapping("title/{title}")
     public ResponseEntity<APIResponse<List<NotePaper>>> getNoteByTitle(@PathVariable String title) {
-        List<NotePaper> foundNotes = notePaperRepo.searchTitleIgnoreCase(title);
+        Long userId = userService.getUsernameOfCurrentUser();
+        List<NotePaper> foundNotes = notePaperRepo.searchTitleIgnoreCase(title,userId);
 
         System.out.println(foundNotes);
         if (foundNotes.isEmpty()) {
