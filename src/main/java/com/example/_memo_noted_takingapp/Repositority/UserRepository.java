@@ -3,10 +3,8 @@ package com.example._memo_noted_takingapp.Repositority;
 import com.example._memo_noted_takingapp.Model.User;
 import com.example._memo_noted_takingapp.Model.dto.Request.ForgetRequest;
 import com.example._memo_noted_takingapp.Model.dto.Response.UserResponse;
+import jakarta.validation.Valid;
 import org.apache.ibatis.annotations.*;
-
-
-import java.util.List;
 
 @Mapper
 public interface UserRepository {
@@ -14,16 +12,18 @@ public interface UserRepository {
              @Result(property = "userId",column = "user_id"),
              @Result(property = "name",column = "userName"),
              @Result(property = "email", column = "email"),
-             @Result(property = "password", column = "Password"),
-             @Result(property = "gender", column = "gender"),
-             @Result(property = "profileImage", column = "profile_image")
+             @Result(property = "password", column = "Password")
+
      })
-     @Select("INSERT INTO user_tb (userName,email, Password, gender,profile_image) VALUES (#{user.name},#{user.email}, #{user.password},CAST(#{user.gender} AS gender_enum), #{user.profileImage}) RETURNING *")
+     @Select("INSERT INTO user_tb (userName,email, Password) VALUES (#{user.name},#{user.email}, #{user.password}) RETURNING *")
      User save(@Param("user") User newUser);
 
      @Select("SELECT * FROM user_tb WHERE email = #{email}")
      @ResultMap("authMapper")
      User getUserByEmail(@Param("email") String email);
+
+
+
 
      @Select("UPDATE user_tb SET Password = #{pass.password} WHERE email = #{email} RETURNING *")
      @ResultMap("authMapper")
@@ -31,10 +31,13 @@ public interface UserRepository {
 
      @Select("SELECT * FROM user_tb WHERE user_id = #{id}")
      @Result(property = "userId",column = "user_id")
-     @Result(property = "name",column = "userName")
+     @Result(property = "username",column = "userName")
      @Result(property = "email", column = "email")
-     @Result(property = "gender", column = "gender")
-     @Result(property = "profileImage", column = "profile_image")
+
      UserResponse getUserById(@Param("userId") Integer id);
+
+     @Select("SELECT * FROM user_tb WHERE email = #{email} AND Password = #{password}")
+     @ResultMap("authMapper")
+     User getUserByEmailandPassword(String email, @Valid String password);
 }
 

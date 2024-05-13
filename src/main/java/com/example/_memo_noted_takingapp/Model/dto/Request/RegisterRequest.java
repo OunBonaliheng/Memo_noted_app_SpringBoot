@@ -25,10 +25,9 @@ public class RegisterRequest {
     @NotNull
     @NotBlank
     private String confirmPassword;
-    @NotNull
-    private Gender gender;
-    @NotNull
-    @NotBlank
-    private String profileImage;
+//    @NotNull
+//    private Gender gender;
+//
+//    private String profileImage;
 
 }

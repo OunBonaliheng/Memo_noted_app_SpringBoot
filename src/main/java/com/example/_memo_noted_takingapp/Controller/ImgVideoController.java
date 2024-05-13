@@ -18,7 +18,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/memo/notes/imgVideo/")
 @AllArgsConstructor
-@SecurityRequirement(name = "bearerAuth")
 public class ImgVideoController {
     private final ImgVideoService imgVideoService;
 

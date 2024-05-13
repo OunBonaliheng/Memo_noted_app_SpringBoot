@@ -34,7 +34,7 @@ public interface NotePaperRepo {
 
      // Insert note
      @Select("""
-        INSERT INTO note_tb (title,note_content,note_description,creation_date, select_color,user_id)
+        INSERT INTO note_tb (title,note_content,note_description,creation_date, select_color, user_id)
         VALUES (#{Note.title},#{Note.note_content},#{Note.note_description},#{Note.creationDate}, #{Note.selectColor},#{userId})
         RETURNING *;
     """)
@@ -43,7 +43,7 @@ public interface NotePaperRepo {
 
      // Update note by id
      @Select("""
-        UPDATE note_tb SET title = #{note.title},note_content =#{note.note_content},note_description = #{note.note_description} ,creation_date = #{note.creationDate}, select_color = #{note.selectColor},  filesimgvideo = #{note.filesimgvideo},user_id=#{userId}
+        UPDATE note_tb SET title = #{note.title},note_content =#{note.note_content},note_description = #{note.note_description} ,creation_date = #{note.creationDate}, select_color = #{note.selectColor},user_id=#{userId}
         WHERE noted_id = #{id} RETURNING *;
     """)
      @ResultMap("NoteMapper")

@@ -10,11 +10,11 @@ import lombok.NoArgsConstructor;
 @Data
 public class UserResponse {
     private Long userId;
-    private String name;
+    private String username;
 //    private String username;
     private String email;
-    private Gender gender;
-    private String profileImage;
+//    private Gender gender;
+//    private String profileImage;
 
 
 }

@@ -14,14 +14,14 @@ import java.util.Collections;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class User implements UserDetails {
+public class  User implements UserDetails {
     private Long userId;
     private String username;
     private String name;
     private String email;
     private String password;
-    private Gender gender;
-    private String profileImage;
+//    private Gender gender;
+//    private String profileImage;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
@@ -36,9 +36,6 @@ public class User implements UserDetails {
     public String getPassword() {
         return password;
     }
-
-
-
     @Override
     public boolean isAccountNonExpired() {
         return true;

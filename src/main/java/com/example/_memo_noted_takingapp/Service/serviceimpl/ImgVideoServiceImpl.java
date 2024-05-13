@@ -25,7 +25,6 @@ public class ImgVideoServiceImpl implements ImgVideoService {
 
     @Override
     public FilesImgVideo createImgVideo(FilesImgVideoRequest filesImgVideo) {
-
         return imgVideoRepo.addImgVideo(filesImgVideo);
     }
 

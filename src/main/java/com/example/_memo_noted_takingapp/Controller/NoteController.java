@@ -1,5 +1,7 @@
 package com.example._memo_noted_takingapp.Controller;
+import com.example._memo_noted_takingapp.Exception.NotFoundException;
 import com.example._memo_noted_takingapp.Model.NotePaper;
+import com.example._memo_noted_takingapp.Model.Tags;
 import com.example._memo_noted_takingapp.Model.dto.Request.NotePaperRequest;
 import com.example._memo_noted_takingapp.Model.dto.Response.APIResponse;
 import com.example._memo_noted_takingapp.Repositority.NotePaperRepo;
@@ -20,7 +22,7 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/memo/notes/")
+@CrossOrigin(origins = "http://localhost:8080")
 @SecurityRequirement(name = "bearerAuth")
 public class NoteController {
     private final NotePaperService notePaperService;
@@ -34,42 +36,37 @@ public class NoteController {
         this.userService = userService;
         this.notePaperRepo = notePaperRepo;
     }
-    @GetMapping
+    @GetMapping("/api/memo/notes/")
     public ResponseEntity<APIResponse<List<NotePaper>>> getAllNotes() {
         return ResponseEntity.status(HttpStatus.OK).body(
                 new APIResponse<>(
-                        "Find all notes successful",
-                        notePaperService.getAllNotes(),
-                        HttpStatus.OK, new Date()));
+                        "Find all notes successful",notePaperService.getAllNotes(),HttpStatus.OK, currentDate
+                )
+        );
     }
-    @GetMapping("{id}")
-    public ResponseEntity<APIResponse<NotePaper>> getNoteById(@PathVariable @Valid @Positive(message = "must be greater than 0") Integer id) {
-        return ResponseEntity.status(HttpStatus.OK).body(new APIResponse<>(
-                "Note With ID: "+id+"  is found successful",
-                notePaperService.getNotesById(id),
-                HttpStatus.OK,new Date()));
+    @GetMapping("/api/memo/notes/{id}")
+    public ResponseEntity<NotePaper> getNoteById(@PathVariable @Valid @Positive(message = "must be greater than 0") Integer id) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                notePaperService.getNotesById(id));
     }
-    @GetMapping("title/{title}")
-    public ResponseEntity<APIResponse<List<NotePaper>>> getNoteByTitle(@PathVariable String title) {
+    @GetMapping("/api/memo/notes/title/{title}")
+    public ResponseEntity<List<NotePaper>> getNoteByTitle(@PathVariable String title) {
         Long userId = userService.getUsernameOfCurrentUser();
         List<NotePaper> foundNotes = notePaperRepo.searchTitleIgnoreCase(title,userId);
 
         System.out.println(foundNotes);
         if (foundNotes.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new APIResponse<>("No notes found with the title: " + title, null, HttpStatus.NOT_FOUND,new Date())
-            );
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(foundNotes);
         } else {
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new APIResponse<>("Search note successful", foundNotes, HttpStatus.OK, new Date())
+                    foundNotes
             );
         }
     }
 
 
-    @PostMapping
-    public ResponseEntity<APIResponse<NotePaper>> addNote(@RequestBody @Valid NotePaperRequest notePaperRequest) {
-
+    @PostMapping("/api/memo/notes/")
+    public ResponseEntity<NotePaper> addNote(@RequestBody @Valid NotePaperRequest notePaperRequest) {
         NotePaper notePaper = notePaperService.saveNotes(notePaperRequest);
         notePaperRequest.setCreationDate(currentDate);
         System.out.println(notePaperRequest);
@@ -77,14 +74,14 @@ public class NoteController {
             tags_noteRepo.insertTag(notePaper.getNotedId(),Id);
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                new APIResponse<>("Note is created successfully",
-                     notePaperService.getNotesById(notePaper.getNotedId()),
-                        HttpStatus.OK, new Date())
+                     notePaperService.getNotesById(notePaper.getNotedId())
         );
     }
 
-    @PutMapping("{id}")
-    public ResponseEntity<APIResponse<NotePaper>> updateNote(@PathVariable @Valid @Positive(message = "must be greater than 0") Integer id, @RequestBody NotePaperRequest notePaperRequest) {
+    @PutMapping("/api/memo/notes/{id}")
+    public ResponseEntity<NotePaper> updateNote(@PathVariable @Valid @Positive(message = "must be greater than 0") Integer id, @RequestBody NotePaperRequest notePaperRequest) {
+
+
         NotePaper notePaper = notePaperService.updateNote(id, notePaperRequest);
         notePaperRequest.setCreationDate(currentDate);
         tags_noteRepo.removeTag(notePaper.getNotedId());
@@ -95,26 +92,18 @@ public class NoteController {
         System.out.println(notePaperRequest);
         if (!notePaperRequest.getTagsLists().isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new APIResponse<>("Note with Id: " + id + " is updated successfully",
-                            notePaperService.getNotesById(notePaper.getNotedId()),
-                            HttpStatus.OK,
-                            new Date())
+                    notePaperService.getNotesById(notePaper.getNotedId())
             );
-        }else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new APIResponse<>("Note with Id: " + id + " is not found",
-                            notePaper,
-                            HttpStatus.OK,new Date())
-
-            );
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(notePaper);
         }
+
     }
-    @DeleteMapping("{id}")
-    public ResponseEntity<APIResponse<String>> removeNote(@PathVariable @Valid @Positive(message = "must be greater than 0") Integer id) {
+
+    @DeleteMapping("/api/memo/notes/{id}")
+    public ResponseEntity<String> removeNote(@PathVariable @Valid @Positive(message = "must be greater than 0") Integer id) {
        String message =  notePaperService.deleteNote(id);
         System.out.println(message);
-       return ResponseEntity.status(HttpStatus.OK).body(new APIResponse<>(
-               "Note with Id: " + id + " successfully deleted",null,HttpStatus.OK,new Date()
-       ));
+       return ResponseEntity.status(HttpStatus.OK).body("successfully Note deleted");
     }
 }

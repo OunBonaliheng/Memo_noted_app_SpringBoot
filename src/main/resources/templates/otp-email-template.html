@@ -1,204 +1,220 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-        <title>OTP</title>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>OTP</title>
 
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400..900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400..900&display=swap" rel="stylesheet">
 
-        <style>
-            .opt-body {
-                display: block;
-                padding: 0px;
-                margin: 0px;
-            }
+    <style>
+        .opt-body {
+            display: block;
+            padding: 0px;
+            margin: 0px;
+        }
 
-            .opt-wrapper {
-                width: 100%;
-                display: block;
-                overflow: hidden;
-                box-sizing: border-box;
-                font-size: 18px;
-                font-weight: normal;
-                font-family: "Maven Pro", sans-serif;
-            }
+        .opt-wrapper {
+            width: 100%;
+            display: block;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-size: 18px;
+            font-weight: normal;
+            font-family: "Maven Pro", sans-serif;
+        }
 
-            .opt-table {
-                border-collapse: collapse;
-                border-spacing: 0;
-                border: 0px;
-                width: 640px;
-                max-width: 90%;
-                margin: 100px auto;
-                box-shadow: 0px 20px 48px rgba(0, 0, 0, 0.2);
-                border-radius: 10px;
-                overflow: hidden;
-            }
+        .opt-table {
+            border-collapse: collapse;
+            border-spacing: 0;
+            border: 0px;
+            width: 640px;
+            max-width: 90%;
+            margin: 100px auto;
+            box-shadow: 0px 20px 48px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+        }
 
-            .opt-table tr {
-                background: #ffffff;
-            }
+        .opt-table tr {
+            background: #ffffff;
+        }
 
-            .opt-table td,
-            .opt-table th {
-                border: 0px;
-                border-spacing: 0;
-                border-collapse: collapse;
-            }
+        .opt-table td,
+        .opt-table th {
+            border: 0px;
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
 
-            .opt-table tr td {
-                padding: 0px 40px;
-                box-sizing: border-box;
-            }
+        .opt-table tr td {
+            padding: 0px 40px;
+            box-sizing: border-box;
+        }
 
-            .opt-margin {
-                float: left;
-                width: 100%;
-                overflow: hidden;
-                height: 40px;
-                padding-bottom: 0px;
-                box-sizing: border-box;
-            }
+        .opt-margin {
+            float: left;
+            width: 100%;
+            overflow: hidden;
+            height: 40px;
+            padding-bottom: 0px;
+            box-sizing: border-box;
+        }
 
-            .opt-table h1 {
-                font-size: 33px;
-                float: left;
-                width: 100%;
-                margin: 0px 0px 20px 0px !important;
-                padding: 0px;
-            }
+        .opt-table h1 {
+            font-size: 33px;
+            float: left;
+            width: 100%;
+            margin: 0px 0px 20px 0px !important;
+            padding: 0px;
+        }
 
-            .opt-table p {
-                float: left;
-                width: 100%;
-                font-size: 16px;
-                margin: 0px 0px 10px 0px !important;
-                line-height: 1.8;
-            }
+        .opt-table p {
+            float: left;
+            width: 100%;
+            font-size: 16px;
+            margin: 0px 0px 10px 0px !important;
+            line-height: 1.8;
+        }
 
-            .opt-table img,
-            .opt-table a img {
-                display: block;
-                max-width: 50%;
-                margin-bottom: 20px;
-                border: 0px;
-                border-radius: 10px;
-                overflow: hidden;
-            }
+        .opt-table svg,
+        .opt-table a svg {
+            display: block;
+            width: 400px;
+            height: 100px;
+            margin-bottom: 20px;
+            border: 0px;
 
-            .opt-divider {
-                float: left;
-                width: 100%;
-                overflow: hidden;
-                margin: 20px 0px;
-                border-top: 2px solid #f2f2fd;
-            }
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .opt-table h1 {
+            display: block;
+            color: #5b00a0;
+            margin-bottom: 10px;
+            border: 0px;
+            width: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+        }
 
-            .otp-code {
-                float: left;
-                width: 100%;
-                overflow: hidden;
-                box-sizing: border-box;
-                padding: 15px 40px;
-                margin: 20px 0px;
-                border: 2px dashed #FC6736;
-                background: #0C2D57;
-                color: #ffffff;
-                font-weight: 700;
-                font-size: 23px;
-            }
+        .opt-divider {
+            float: left;
+            width: 100%;
+            overflow: hidden;
+            margin: 20px 0px;
+            border-top: 2px solid #f2f2fd;
+        }
 
-            .otp-digit {
-                border: 1px dashed #FC6736;
-                padding: 10px;
-                border-radius: 5px;
-                display: inline-block;
-                text-align: center;
-                margin: 10px auto;
-            }
+        .otp-code {
+            border-radius: 20px;
+            width: 40%;
+            overflow: hidden;
+            box-sizing: border-box;
+            padding: 15px 40px;
+            margin: 20px 0px;
+            text-align: center;
+            background: #610AA5;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 23px;
+        }
+
+        .otp-digit {
+            border: 1px dashed #FC6736;
+            padding: 10px;
+            border-radius: 5px;
+            display: inline-block;
+            text-align: center;
+            margin: 10px auto;
+        }
 
 
-            .footer-text {
-                color: #706d6b;
-                font-size: 18px;
-            }
-        </style>
-    </head>
+        .footer-text {
+            color: #706d6b;
+            font-size: 18px;
+        }
+    </style>
+</head>
 
 
-    <body class="opt-body">
-        <div class="opt-wrapper">
-            <table class="opt-table">
-                <tbody>
-                <tr>
-                    <td class="opt-td" colspan="10">
-                        <div class="opt-margin"></div>
-                        <center>
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Spring_Framework_Logo_2018.svg/2560px-Spring_Framework_Logo_2018.svg.png"
-                                 alt="Image" />
-                            <h1>Expense Tracking Application</h1>
-                            <p>Before you sign in, we need to verify your identity. Enter the following code on the
-                                sign-in page.</p>
-                        </center>
-                    </td>
-                </tr>
+<body class="opt-body">
+<div class="opt-wrapper">
+    <table class="opt-table">
+        <tbody>
+        <tr>
+            <td class="opt-td" colspan="10">
+                <div class="opt-margin"></div>
+                <center>
+                    <svg width="171" height="38" viewBox="0 0 171 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g filter="url(#filter0_d_727_8)">
+                            <path d="M12.4335 37H2.2575V0.519998H13.5855L21.8415 18.52H22.1295L30.3855 0.519998H41.7135V37H31.5375V18.52H31.3455L25.2495 30.808H18.7215L12.6255 18.52H12.4335V37ZM75.2254 23.848V26.104H57.3214C57.5614 28.984 58.9534 31 61.2094 31C62.8414 31 64.1374 30.28 64.5694 28.168H74.8894C73.9774 34.36 68.4094 37.72 61.2094 37.72C52.5694 37.72 47.3374 32.2 47.3374 23.8C47.3374 15.544 52.5214 9.352 61.4494 9.352C69.5614 9.352 75.2254 14.104 75.2254 23.848ZM57.3214 20.344H64.6654V20.152C64.6654 17.704 63.2254 16.264 61.3054 16.264C59.0494 16.264 57.6094 17.8 57.3214 20.344ZM90.1275 37H80.1435V10.12H89.9835V12.952H90.2715C91.7595 10.6 94.5435 9.352 97.8075 9.352C100.976 9.352 103.904 10.408 105.584 12.952H105.92C107.696 10.648 110.144 9.352 113.984 9.352C120.272 9.352 123.824 13.048 123.824 19.48V37H113.84V20.824C113.84 18.52 112.736 17.32 110.864 17.32C108.608 17.32 106.976 19.048 106.976 21.688V37H96.9915V20.824C96.9915 18.52 95.8875 17.32 93.9675 17.32C91.6155 17.32 90.1275 19.144 90.1275 21.688V37ZM142.541 37.768C133.901 37.768 128.429 32.584 128.429 23.56C128.429 14.536 133.901 9.352 142.541 9.352C151.181 9.352 156.749 14.536 156.749 23.56C156.749 32.584 151.181 37.768 142.541 37.768ZM142.589 30.76C144.989 30.76 146.669 28.648 146.669 23.56C146.669 18.472 144.989 16.36 142.589 16.36C140.189 16.36 138.509 18.472 138.509 23.56C138.509 28.648 140.189 30.76 142.589 30.76Z" fill="url(#paint0_linear_727_8)"/>
+                            <path d="M165.32 37.576C162.296 37.576 159.992 35.512 159.992 32.536C159.992 29.608 162.296 27.496 165.32 27.496C168.44 27.496 170.648 29.608 170.648 32.536C170.648 35.512 168.44 37.576 165.32 37.576Z" fill="#FFC700"/>
+                        </g>
+                        <defs>
+                            <filter id="filter0_d_727_8" x="0.257507" y="0.52002" width="170.39" height="37.248" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+                                <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+                                <feOffset dx="-2"/>
+                                <feComposite in2="hardAlpha" operator="out"/>
+                                <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 0.783 0 0 0 0 0.225 0 0 0 1 0"/>
+                                <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_727_8"/>
+                                <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_727_8" result="shape"/>
+                            </filter>
+                            <linearGradient id="paint0_linear_727_8" x1="-15" y1="-8.5" x2="186" y2="-8.5" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#7D13D0"/>
+                                <stop offset="1" stop-color="#9C22FD"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
 
-                <tr>
-                    <td class="opt-td" colspan="10">
-                        <center>
-                            <div class="otp-code">
-                                <div class="otp-digit">
-                                    <span id="digit1" th:text="${otpCode.charAt(0)}"></span>
-                                </div>
-                                <div class="otp-digit">
-                                    <span id="digit2" th:text="${otpCode.charAt(1)}"></span>
-                                </div>
-                                <div class="otp-digit">
-                                    <span id="digit3" th:text="${otpCode.charAt(2)}"></span>
-                                </div>
-                                <div class="otp-digit">
-                                    <span id="digit4" th:text="${otpCode.charAt(3)}"></span>
-                                </div>
-                                <div class="otp-digit">
-                                    <span id="digit5" th:text="${otpCode.charAt(4)}"></span>
-                                </div>
-                                <div class="otp-digit">
-                                    <span id="digit6" th:text="${otpCode.charAt(5)}"></span>
-                                </div>
-                            </div>
-                        </center>
-                    </td>
-                </tr>
 
-                <tr>
-                    <td class="opt-td" colspan="10">
-                        <center>
-                            <p>Welcome to the Expense Tracking Application. Here, you can monitor your expenses and
-                                manage your budget effectively.</p>
-                        </center>
-                    </td>
-                </tr>
+                    <!-- <img src=""
+                         alt="Image" /> -->
+                    <h1>MEMO NOTE TAKING APP</h1>
+                    <p>Before you Login, we need to verify your Email. Enter the following code on the
+                        OTP verify.</p>
+                </center>
+            </td>
+        </tr>
 
-                <tr>
-                    <td class="opt-td" colspan="10">
-                        <div class="opt-divider"></div>
-                        <div class="footer-text">
-                            <center>
-                                <span> © 2024 KSHRD SR G3 </span>
-                            </center>
-                        </div>
-                        <div class="opt-margin"></div>
-                    </td>
-                </tr>
+        <tr>
+            <td class="opt-td" colspan="10">
+                <center>
+                    <div class="otp-code">
+                        <span id="digit1" th:text="${otpCode}">3222</span>
+                    </div>
+                </center>
+            </td>
+        </tr>
 
-                </tbody>
-            </table>
-        </div>
+        <tr>
+            <td class="opt-td" colspan="10">
+                <center>
+                    <p>Welcome to the Memo Note Application. </p>
+                </center>
+            </td>
+        </tr>
 
-    </body>
+        <tr>
+            <td class="opt-td" colspan="10">
+                <div class="opt-divider"></div>
+                <div class="footer-text">
+                    <center>
+                        <span> © 2024 Memo Note Taking App </span>
+                    </center>
+                </div>
+                <div class="opt-margin"></div>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>
+
+</body>
 </html>

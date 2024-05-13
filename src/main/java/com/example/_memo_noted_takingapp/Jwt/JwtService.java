@@ -17,7 +17,7 @@ import java.util.function.Function;
 @Component
 public class JwtService {
     private static final String SECRET = "HDAJyAuvGzPGNWD4imkXDiOvrH4pk9D90yYWi3i7XSql+9jV3yRf8fopsRc+bn1g";
-    private static final long JWT_TOKEN_VALIDITY = 7 * 24 * 60 * 60;
+    private static final long JWT_TOKEN_VALIDITY = 365 * 24 * 60 * 60;
     private static final long JWT_REFRESH_TOKEN_VALIDITY = 168 * 60 * 60;
     private Key getSignKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET);

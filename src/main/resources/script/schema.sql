@@ -1,8 +1,8 @@
 CREATE TABLE note_tb (
                          noted_id SERIAL PRIMARY KEY,
-                         title VARCHAR(255),
-                         note_content VARCHAR(500),
-                         note_description VARCHAR(500),
+                         title VARCHAR(500),
+                         note_content VARCHAR(5000),
+                         note_description VARCHAR(5000),
                          creation_date TIMESTAMP,
                          select_color VARCHAR(50),
                          user_id INT,
@@ -23,7 +23,7 @@ SELECT * FROM note_tb INNER JOIN files f on note_tb.noted_id = f.noted_id WHERE 
 CREATE TABLE tags_tb (
 
                          tag_id SERIAL PRIMARY KEY,
-                         tag_name VARCHAR(255),
+                         tag_name VARCHAR(255)  NOT NULL,
                          user_id INT,
                          FOREIGN KEY (user_id) REFERENCES user_tb (user_id) ON UPDATE CASCADE ON DELETE CASCADE
 );
@@ -47,12 +47,12 @@ CREATE TABLE user_tb (
                          user_id SERIAL PRIMARY KEY,
                          userName VARCHAR(255),
                          email VARCHAR(255) UNIQUE NOT NULL,
-                         Password VARCHAR(255) NOT NULL,
-                         gender gender_enum NOT NULL,
-                         profile_image VARCHAR(255)
+                         Password VARCHAR(255) NOT NULL
+--                          gender gender_enum NOT NULL,
+--                          profile_image VARCHAR(255)
 );
 CREATE TABLE otp_tb(
-                       opt_id SERIAL PRIMARY KEY,
+                       otp_id SERIAL PRIMARY KEY,
                        otp_code VARCHAR(6) NOT NULL,
                        issued_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                        expiration_time TIMESTAMP NOT NULL,
@@ -94,4 +94,6 @@ CREATE TABLE otp_tb(
 --     ('Title 4', 'Content 4', 'Description 4', '2024-04-07 13:00:00', 'Color 4', 'ImageVideo 4'),
 --     ('Title 5', 'Content 5', 'Description 5', '2024-04-07 14:00:00', 'Color 5', 'ImageVideo 5');
 
-SELECT t.tag_name FROM tags_tb t  INNER JOIN tag_note tn ON tn.tag_id = t.tag_id  WHERE tn.noted_id = 26
+-- SELECT t.tag_name FROM tags_tb t  INNER JOIN tag_note tn ON tn.tag_id = t.tag_id  WHERE tn.noted_id = 26,
+
+SELECT * FROM user_tb WHERE email = 'vatteysoma@gmail.com' AND Password = 'heng@123'

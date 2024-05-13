@@ -1,5 +1,6 @@
 package com.example._memo_noted_takingapp.Service.serviceimpl;
 
+import com.example._memo_noted_takingapp.Exception.InvalidInputException;
 import com.example._memo_noted_takingapp.Exception.NotFoundException;
 import com.example._memo_noted_takingapp.Model.Tags;
 import com.example._memo_noted_takingapp.Model.dto.Request.TagsRequest;
@@ -39,7 +40,15 @@ public class Tagsimpl implements TagsService {
     @Override
     public Tags addTags(TagsRequest tagsRequest) {
         long userId = userServiceImple.getUsernameOfCurrentUser();
-        return  tagsRepo.addTags(tagsRequest,userId);
+
+        // Check if a tag with the same name already exists for the user
+        Tags existingTag = tagsRepo.findTagsByTagName(tagsRequest.getTagName(), userId);
+        if (existingTag != null) {
+            throw new InvalidInputException("Tag with the same name already exists for this user.");
+        }
+
+        // If the tag doesn't exist, add it
+        return tagsRepo.addTags(tagsRequest, userId);
     }
 
     @Override

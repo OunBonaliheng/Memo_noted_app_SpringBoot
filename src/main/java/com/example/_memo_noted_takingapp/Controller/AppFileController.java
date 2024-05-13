@@ -4,6 +4,7 @@ package com.example._memo_noted_takingapp.Controller;
 import com.example._memo_noted_takingapp.Model.AppFile;
 import com.example._memo_noted_takingapp.Model.dto.Response.APIResponse;
 import com.example._memo_noted_takingapp.Service.FileUpload.AppFileService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
 
 import org.springframework.core.io.Resource;
@@ -18,13 +19,13 @@ import java.io.IOException;
 import java.util.Date;
 
 @RestController
-@RequestMapping("/api/v1/files")
+@CrossOrigin("http://localhost:8080")
 @AllArgsConstructor
-
+@SecurityRequirement(name = "bearerAuth")
 public class AppFileController {
     private final AppFileService appFileService;
 
-    @PostMapping(value ="/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value ="/api/v1/files/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> uploadFile(@RequestParam MultipartFile file) throws IOException {
         String fileName = appFileService.uploadFile(file);
         APIResponse<AppFile> response = APIResponse.<AppFile>builder()
@@ -40,7 +41,7 @@ public class AppFileController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping()
+    @GetMapping("/api/v1/files/{fileName}")
     public ResponseEntity<?> getFileByFileName(@RequestParam String fileName) throws IOException {
         Resource resource = appFileService.getFileByFileName(fileName);
         // Set default media type to octet-stream for all files

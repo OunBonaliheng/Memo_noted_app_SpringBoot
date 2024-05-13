@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.*;
 @Mapper
 public interface OtpRepository {
     @Results(id = "OtpMapper", value = {
-            @Result(property = "id",column = "opt_id"),
+            @Result(property = "id",column = "otp_id"),
             @Result(property = "otpCode", column = "otp_code"),
             @Result(property = "expirationTime", column = "expiration_time"),
             @Result(property = "userId", column = "user_id"),
@@ -21,7 +21,7 @@ public interface OtpRepository {
     @ResultMap("OtpMapper")
     Otp insertOtp(@Param("otp") Otp otp);
 
-    @Select("UPDATE otp_tb SET verified = #{otpId.verified}, otp_code = #{otpId.otpCode}, expiration_time = #{otpId.expirationTime} WHERE opt_id = #{otpId.id} RETURNING *")
+    @Select("UPDATE otp_tb SET verified = #{otpId.verified}, otp_code = #{otpId.otpCode}, expiration_time = #{otpId.expirationTime} WHERE otp_id = #{otpId.id} RETURNING *")
     @ResultMap("OtpMapper")
     Otp updateOtp(@Param("otpId") Otp otpId);
 

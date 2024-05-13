@@ -54,20 +54,15 @@ public class UserServiceImpl implements UserService {
 
         if (!registerRequest.getPassword().equals(registerRequest.getConfirmPassword()) || registerRequest.getPassword().length() < 8)
             throw new InvalidInputException("Passwords do not match or have at least 8 characters");
-        Gender gender = registerRequest.getGender();
-        //Handle Gender Choose
-        if (gender == null || (gender != Gender.MALE && gender != Gender.FEMALE))  throw new InvalidInputException("Please choose a correct gender");
         registerRequest.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         String otpCode = otpUtil.generateOtp();
         User user = new User();
         user.setName(registerRequest.getUsername());
         user.setEmail(registerRequest.getEmail());
         user.setPassword(registerRequest.getPassword());
-        user.setGender(gender);
-        user.setProfileImage(registerRequest.getProfileImage());
+
         System.out.println(user);
         User savedUser = userRepository.save(user);
-
         Otp otp = new Otp();
         otp.setUserId(savedUser.getUserId());
         otp.setOtpCode(otpCode);
@@ -75,10 +70,14 @@ public class UserServiceImpl implements UserService {
         otp.setExpirationTime(calculateExpirationTime());
         otpRepository.insertOtp(otp);
         emailUtil.sendOtpEmail(savedUser.getEmail(), otpCode);
-        return new UserResponse(savedUser.getUserId(), savedUser.getName(), savedUser.getEmail(), savedUser.getGender(), savedUser.getProfileImage());
+        return new UserResponse(savedUser.getUserId(), savedUser.getName(), savedUser.getEmail());
     }
-
-
+//        user.setGender(gender);
+//        user.setProfileImage(registerRequest.getProfileImage());
+//        , savedUser.getGender(), savedUser.getProfileImage()
+    //        Gender gender = registerRequest.getGender();
+//        //Handle Gender Choose
+//        if (gender == null || (gender != Gender.MALE && gender != Gender.FEMALE))  throw new InvalidInputException("Please choose a correct gender");
 
     @Override
     public AuthResponse login(LoginRequest loginRequest) {
@@ -87,9 +86,10 @@ public class UserServiceImpl implements UserService {
             User user = userRepository.getUserByEmail(loginRequest.getEmail());
             if (user != null) {
                 Otp latestOtp = otpRepository.getOtpByUserId(user.getUserId());
-                if (latestOtp == null || !latestOtp.isVerified()) throw new NotFoundException("Your account is not verified yet, please try again.");
                 if (!passwordConfig.passwordEncoder().matches(loginRequest.getPassword(), userDetails.getPassword())) throw new NotFoundException(
                         "Your password is Invalid, please try again :).");
+                if (latestOtp == null || !latestOtp.isVerified()) throw new InvalidInputException("Your account is not verified yet, please try again.");
+
 
                 String token = jwtService.generateToken(userDetails.getUsername());
                 return new AuthResponse(token);
@@ -97,6 +97,7 @@ public class UserServiceImpl implements UserService {
         } throw new NotFoundException("User not found with email " + loginRequest.getEmail());
 
     }
+
 
 
 
@@ -162,7 +163,7 @@ public class UserServiceImpl implements UserService {
 
     private Timestamp calculateExpirationTime() {
         long currentTimeMillis = System.currentTimeMillis();
-        long expirationTimeMillis = currentTimeMillis + (2 * 60 * 1000);
+        long expirationTimeMillis = currentTimeMillis + (1 * 60 * 1000);
         return new Timestamp(expirationTimeMillis);
     }
     @Override
@@ -173,7 +174,6 @@ public class UserServiceImpl implements UserService {
         System.out.println(userId);
         return userId;
     }
-
 
 
 }

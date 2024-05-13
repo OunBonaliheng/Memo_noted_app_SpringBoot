@@ -67,12 +67,11 @@ public class NotePaperimpl implements NotePaperService {
         }
         Long userId = userServiceImpl.getUsernameOfCurrentUser();
         NotePaper notePaper = notePaperRepo.updateNotes(id,notePaperRequest,userId);
-       if (notePaper == null) {
-           throw new NotFoundException("The notePaper with Id " + id + " not found for update");
-       }
+        if (notePaper == null) {
+            throw new NotFoundException("The notePaper with Id " + id + " not found for update");
+        }
         return notePaper;
     }
-
     @Override
     public String deleteNote(Integer id) {
         Long userId = userServiceImpl.getUsernameOfCurrentUser();

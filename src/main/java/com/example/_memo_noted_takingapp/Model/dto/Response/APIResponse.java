@@ -21,7 +21,7 @@ public class APIResponse<T> {
     private Date creationDate;
 
     public String getCreationDate() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a");
         return sdf.format(creationDate);
     }
 }

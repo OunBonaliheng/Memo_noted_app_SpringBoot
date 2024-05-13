@@ -71,4 +71,9 @@ public interface TagsRepo {
     @Select("SELECT * FROM tags_tb WHERE  LOWER(tag_name) LIKE CONCAT('%', LOWER(#{tagname}), '%') AND user_id =#{userId}")
     @ResultMap("TagMapper")
     List<Tags> findTagsname(String tagname, Long userId);
+
+    @Select("SELECT * FROM tags_tb WHERE tag_name = #{tagName} AND user_id = #{userId}")
+    @ResultMap("TagMapper")
+    Tags findTagsByTagName(@Param("tagName") String tagName, @Param("userId") Long userId);
+
 }
