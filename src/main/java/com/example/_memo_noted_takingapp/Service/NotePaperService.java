@@ -16,4 +16,5 @@ public interface NotePaperService {
 
     String deleteNote(Integer id);
 
+    List<NotePaper> searchTitleIgnoreCase(String title);
 }

@@ -33,7 +33,6 @@ public interface UserRepository {
      @Result(property = "userId",column = "user_id")
      @Result(property = "username",column = "userName")
      @Result(property = "email", column = "email")
-
      UserResponse getUserById(@Param("userId") Integer id);
 
      @Select("SELECT * FROM user_tb WHERE email = #{email} AND Password = #{password}")

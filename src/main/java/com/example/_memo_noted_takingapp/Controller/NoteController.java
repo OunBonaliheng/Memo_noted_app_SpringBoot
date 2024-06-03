@@ -51,16 +51,11 @@ public class NoteController {
     }
     @GetMapping("/api/memo/notes/title/{title}")
     public ResponseEntity<List<NotePaper>> getNoteByTitle(@PathVariable String title) {
-        Long userId = userService.getUsernameOfCurrentUser();
-        List<NotePaper> foundNotes = notePaperRepo.searchTitleIgnoreCase(title,userId);
-
-        System.out.println(foundNotes);
+        List<NotePaper> foundNotes = notePaperService.searchTitleIgnoreCase(title);
         if (foundNotes.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(foundNotes);
         } else {
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    foundNotes
-            );
+            return ResponseEntity.status(HttpStatus.OK).body(foundNotes);
         }
     }
 
@@ -80,25 +75,23 @@ public class NoteController {
 
     @PutMapping("/api/memo/notes/{id}")
     public ResponseEntity<NotePaper> updateNote(@PathVariable @Valid @Positive(message = "must be greater than 0") Integer id, @RequestBody NotePaperRequest notePaperRequest) {
-
-
-        NotePaper notePaper = notePaperService.updateNote(id, notePaperRequest);
         notePaperRequest.setCreationDate(currentDate);
+        NotePaper notePaper = notePaperService.updateNote(id, notePaperRequest);
+
         tags_noteRepo.removeTag(notePaper.getNotedId());
-        for (Integer Id : notePaperRequest.getTagsLists()) {
-            tags_noteRepo.insertTag(notePaper.getNotedId(),Id);
-        }
 
+        List<Integer> tagIds = notePaperRequest.getTagsLists();
+        if (tagIds != null && !tagIds.isEmpty()) {
+            for (Integer tagId : tagIds) {
+                tags_noteRepo.insertTag(notePaper.getNotedId(), tagId);
+            }
+        }
         System.out.println(notePaperRequest);
-        if (!notePaperRequest.getTagsLists().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    notePaperService.getNotesById(notePaper.getNotedId())
-            );
-        } else {
-            return ResponseEntity.status(HttpStatus.OK).body(notePaper);
-        }
-
+        return ResponseEntity.status(HttpStatus.OK).body(notePaper);
     }
+
+
+
 
     @DeleteMapping("/api/memo/notes/{id}")
     public ResponseEntity<String> removeNote(@PathVariable @Valid @Positive(message = "must be greater than 0") Integer id) {

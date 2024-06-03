@@ -70,16 +70,13 @@ public class TagController {
     }
 
     @GetMapping("/api/memo/tags/tagName/{tagname}")
-    public ResponseEntity<APIResponse<List<Tags>>> getTagByTagName(@PathVariable String tagname) {
-        Long userId = userService.getUsernameOfCurrentUser();
-        List<Tags> tags =  tagsRepo.findTagsname(tagname,userId);
-        System.out.println(tags);
-        if (tags.isEmpty()) {
-            throw new NotFoundException("No tags found with the tagname: "+ tagname);
+    public ResponseEntity<List<Tags>> getTagByTagName(@PathVariable String tagname) {
+        List<Tags> foundTags =  tagsService.getTagsByname(tagname);
+        System.out.println(foundTags);
+        if (foundTags.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(foundTags);
         } else {
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new APIResponse<>("Search tag successful", tags, HttpStatus.OK,  new Date())
-            );
+            return ResponseEntity.status(HttpStatus.OK).body(foundTags);
         }
     }
     @DeleteMapping("/api/memo/tags/{id}")

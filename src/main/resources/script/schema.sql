@@ -1,8 +1,8 @@
 CREATE TABLE note_tb (
                          noted_id SERIAL PRIMARY KEY,
-                         title VARCHAR(500),
-                         note_content VARCHAR(5000),
-                         note_description VARCHAR(5000),
+                         title TEXT,
+                         note_content TEXT,
+                         note_description TEXT,
                          creation_date TIMESTAMP,
                          select_color VARCHAR(50),
                          user_id INT,
@@ -96,4 +96,5 @@ CREATE TABLE otp_tb(
 
 -- SELECT t.tag_name FROM tags_tb t  INNER JOIN tag_note tn ON tn.tag_id = t.tag_id  WHERE tn.noted_id = 26,
 
-SELECT * FROM user_tb WHERE email = 'vatteysoma@gmail.com' AND Password = 'heng@123'
+SELECT * FROM user_tb WHERE email = 'vatteysoma@gmail.com' AND Password = 'heng@123';
+SELECT * FROM note_tb WHERE user_id = 3 ORDER BY creation_date DESC

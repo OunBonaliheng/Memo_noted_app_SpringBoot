@@ -10,7 +10,7 @@ import java.util.List;
 public interface NotePaperRepo {
      // Get all notes
      @Select("""
-        SELECT * FROM note_tb WHERE user_id =#{userId} ORDER BY noted_id
+        SELECT * FROM note_tb WHERE user_id =#{userId} ORDER BY creation_date DESC
     """)
      @Results(id = "NoteMapper", value = {
              @Result(property = "notedId", column = "noted_id"),
@@ -44,7 +44,7 @@ public interface NotePaperRepo {
      // Update note by id
      @Select("""
         UPDATE note_tb SET title = #{note.title},note_content =#{note.note_content},note_description = #{note.note_description} ,creation_date = #{note.creationDate}, select_color = #{note.selectColor},user_id=#{userId}
-        WHERE noted_id = #{id} RETURNING *;
+        WHERE noted_id = #{id}  RETURNING *;
     """)
      @ResultMap("NoteMapper")
      //@Param("id")
