@@ -32,4 +32,16 @@ public interface OtpRepository {
     @Select("SELECT * FROM otp_tb WHERE user_id = (SELECT user_id FROM user_tb WHERE email = #{email}) AND verified = false ORDER BY expiration_time DESC LIMIT 1")
     @ResultMap("OtpMapper")
     Otp getLatestUnverifiedOtpByEmail(String email);
+
+    @Select("SELECT * FROM otp_tb WHERE user_id = (SELECT user_id FROM user_tb WHERE email = #{email}) AND verified = True ORDER BY expiration_time DESC LIMIT 1")
+    @ResultMap("OtpMapper")
+    Otp getLatestOtpByEmailAndVerified(String email);
+
+    @Select("SELECT * FROM otp_tb WHERE otp_code = #{otpCode} AND verified = True ORDER BY expiration_time DESC LIMIT 1")
+    @ResultMap("OtpMapper")
+    Otp getLatestOtpByCodeAndVerified(String otpCode);
+
+
+
 }
+

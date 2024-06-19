@@ -1,6 +1,5 @@
 package com.example._memo_noted_takingapp.Service;
 
-import com.example._memo_noted_takingapp.Model.User;
 import com.example._memo_noted_takingapp.Model.dto.Request.ForgetRequest;
 import com.example._memo_noted_takingapp.Model.dto.Request.LoginRequest;
 import com.example._memo_noted_takingapp.Model.dto.Request.RegisterRequest;
@@ -18,8 +17,18 @@ public interface UserService {
 
     String resendOtp(String email);
 
-    UserResponse forgetPassword(ForgetRequest forgetRequest, String email);
+    UserResponse ResetPassword(ForgetRequest forgetRequest, String email);
 
     Long getUsernameOfCurrentUser();
+
+
+
+    UserResponse getUserDetailsById(Long userId);
+
+
+    String requestOtp(String email) throws MessagingException;
+
+    UserResponse verifyOtpForgetPassword(String email, String otpCode,ForgetRequest forgetRequest) throws MessagingException;
+
 
 }

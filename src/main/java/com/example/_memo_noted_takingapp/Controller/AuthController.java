@@ -13,6 +13,7 @@ import com.example._memo_noted_takingapp.Model.dto.Response.UserResponse;
 import com.example._memo_noted_takingapp.Repositority.OtpRepository;
 import com.example._memo_noted_takingapp.Repositority.UserRepository;
 import com.example._memo_noted_takingapp.Service.AuthService;
+import com.example._memo_noted_takingapp.Service.UserProfile;
 import com.example._memo_noted_takingapp.Service.UserService;
 import com.example._memo_noted_takingapp.config.PasswordConfig;
 import jakarta.mail.MessagingException;
@@ -37,6 +38,7 @@ public class AuthController {
     private final PasswordConfig passwordConfig;
     private final PasswordEncoder passwordEncoder;
     private final AuthService authService;
+    private final UserProfile userProfile;
     @PostMapping("/api/memo/notes/Auth/register")
     public ResponseEntity<APIResponse<UserResponse>> register(@RequestBody @Valid RegisterRequest registerRequest) throws MessagingException  {
         if (!isValidPassword(registerRequest.getPassword())) {
@@ -76,10 +78,10 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.OK).body(message);
     }
 
-    @PutMapping("/api/memo/notes/Auth/forget-password")
-    public ResponseEntity<UserResponse> forgetPassword(@RequestBody @Valid ForgetRequest forgetRequest, @RequestParam @Valid String email) {
+    @PutMapping("/api/memo/notes/Auth/reset-password")
+    public ResponseEntity<UserResponse> resetPassword(@RequestBody @Valid ForgetRequest forgetRequest, @RequestParam @Valid String email) {
         if (!isValidPassword(forgetRequest.getPassword())) throw new InvalidInputException("Password must be at least 8 characters long and contain at least one digit, one letter, and one special character.");
-        UserResponse user  = userService.forgetPassword(forgetRequest, email);
+        UserResponse user  = userService.ResetPassword(forgetRequest, email);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
     @GetMapping("/api/memo/notes/Auth/findUserMatchPassword")
@@ -116,9 +118,31 @@ public class AuthController {
                 "Get OTP By Code",message,HttpStatus.OK,new Date()
         ));
     }
-
+    @GetMapping("/api/memo/notes/Auth/getUserDetailsById")
+    public ResponseEntity<APIResponse<UserResponse>> getUserDetailsById(@RequestParam @Positive Long userId) {
+        UserResponse userResponse = userService.getUserDetailsById(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(new APIResponse<>(
+                "Get Username and Email by User ID", userResponse, HttpStatus.OK, new Date()
+        ));
+    }
 
     public static boolean isValidPassword(String password) {
         return password.matches("^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$");
     }
+
+    @PostMapping("/api/memo/notes/Auth/forget-password/request-otp")
+    public ResponseEntity<String> requestOtp(@RequestParam @Valid String email) throws MessagingException {
+        userService.requestOtp(email);
+        return ResponseEntity.status(HttpStatus.OK).body("OTP sent successfully.");
+    }
+    @PutMapping("/api/memo/notes/Auth/Forget-password/verify-otp")
+    public ResponseEntity<UserResponse> ForgetPassword(
+            @RequestParam String email,
+            @RequestParam String otpCode,
+            @RequestBody @Valid ForgetRequest forgetRequest) throws MessagingException {
+        UserResponse userResponse = userService.verifyOtpForgetPassword(email, otpCode, forgetRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userResponse);
+    }
+
+
 }

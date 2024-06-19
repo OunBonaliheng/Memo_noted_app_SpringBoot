@@ -1,10 +1,8 @@
 package com.example._memo_noted_takingapp.Service.serviceimpl;
 
-import com.example._memo_noted_takingapp.Exception.HandlerValidationException;
 import com.example._memo_noted_takingapp.Exception.InvalidInputException;
 import com.example._memo_noted_takingapp.Exception.NotFoundException;
 import com.example._memo_noted_takingapp.Jwt.JwtService;
-import com.example._memo_noted_takingapp.Model.Gender;
 import com.example._memo_noted_takingapp.Model.Otp;
 import com.example._memo_noted_takingapp.Model.User;
 import com.example._memo_noted_takingapp.Model.dto.Request.ForgetRequest;
@@ -21,7 +19,6 @@ import com.example._memo_noted_takingapp.util.EmailUtil;
 import com.example._memo_noted_takingapp.util.OtpUtil;
 import jakarta.mail.MessagingException;
 
-import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 
 import org.modelmapper.ModelMapper;
@@ -72,13 +69,6 @@ public class UserServiceImpl implements UserService {
         emailUtil.sendOtpEmail(savedUser.getEmail(), otpCode);
         return new UserResponse(savedUser.getUserId(), savedUser.getName(), savedUser.getEmail());
     }
-//        user.setGender(gender);
-//        user.setProfileImage(registerRequest.getProfileImage());
-//        , savedUser.getGender(), savedUser.getProfileImage()
-    //        Gender gender = registerRequest.getGender();
-//        //Handle Gender Choose
-//        if (gender == null || (gender != Gender.MALE && gender != Gender.FEMALE))  throw new InvalidInputException("Please choose a correct gender");
-
     @Override
     public AuthResponse login(LoginRequest loginRequest) {
         UserDetails userDetails = authService.loadUserByUsername(loginRequest.getEmail());
@@ -92,14 +82,12 @@ public class UserServiceImpl implements UserService {
 
 
                 String token = jwtService.generateToken(userDetails.getUsername());
-                return new AuthResponse(token);
+                return new AuthResponse(
+                        user.getUserId(), user.getName(), user.getEmail(), token);
             }
         } throw new NotFoundException("User not found with email " + loginRequest.getEmail());
 
     }
-
-
-
 
     @Override
     public boolean verifyOtp(String  otpCode) {
@@ -141,7 +129,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse forgetPassword(ForgetRequest forgetRequest, String email) {
+    public UserResponse ResetPassword(ForgetRequest forgetRequest, String email) {
         // Check if the email exists in the database
         User user = userRepository.getUserByEmail(email);
         if (user == null) throw new NotFoundException("Email not found for update password");
@@ -174,6 +162,56 @@ public class UserServiceImpl implements UserService {
         System.out.println(userId);
         return userId;
     }
+
+    @Override
+    public UserResponse getUserDetailsById(Long userId) {
+        UserResponse userResponse = userRepository.getUserById(userId);
+        if (userResponse == null) {
+            throw new NotFoundException("User not found with ID: " + userId);
+        }
+        return userResponse;
+    }
+
+    @Override
+    public String requestOtp(String email) throws MessagingException {
+        User user = userRepository.getUserByEmail(email);
+        if (user == null) throw new NotFoundException("User with " + email + " not found.");
+        String newOtpCode = otpUtil.generateOtp();
+        try {
+            emailUtil.sendOtpEmail(email, newOtpCode);
+        } catch (MessagingException e) {
+            throw new InvalidInputException("Failed to send OTP email. Please try again later.");
+        }
+        Otp existingOtp = otpRepository.getLatestOtpByEmailAndVerified(email);
+        if (existingOtp == null) throw new NotFoundException("Failed to send OTP, Your Account are already Verify");
+        existingOtp.setOtpCode(newOtpCode);
+        existingOtp.setIssuedAt(new Timestamp(System.currentTimeMillis()));
+        existingOtp.setExpirationTime(calculateExpirationTime());
+        otpRepository.updateOtp(existingOtp);
+        return "OTP sent successfully.";
+
+    }
+
+    @Override
+    public UserResponse verifyOtpForgetPassword(String email, String otpCode, ForgetRequest forgetRequest) {
+        User user = userRepository.getUserByEmail(email);
+        if (user == null) {
+            throw new NotFoundException("Email not found");
+        }
+        Otp otp = otpRepository.getLatestOtpByCodeAndVerified(otpCode);
+        if (otp == null || !otp.getOtpCode().equals(otpCode) || otp.getExpirationTime().before(new Timestamp(System.currentTimeMillis()))) {
+            throw new InvalidInputException("Invalid or expired OTP");
+        }
+        // Validate the new password and confirm password
+        if (!forgetRequest.getPassword().equals(forgetRequest.getConfirmPassword()) || forgetRequest.getPassword().length() < 8) {
+            throw new InvalidInputException("Your confirm password does not match with your password or password is too short");
+        }
+        // Update the user's password
+        forgetRequest.setPassword(passwordEncoder.encode(forgetRequest.getPassword()));
+        User userPassword = userRepository.updatePassword(forgetRequest, email);
+        return modelMapper.map(userPassword, UserResponse.class);
+    }
+
 
 
 }

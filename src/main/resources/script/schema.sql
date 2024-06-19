@@ -97,4 +97,7 @@ CREATE TABLE otp_tb(
 -- SELECT t.tag_name FROM tags_tb t  INNER JOIN tag_note tn ON tn.tag_id = t.tag_id  WHERE tn.noted_id = 26,
 
 SELECT * FROM user_tb WHERE email = 'vatteysoma@gmail.com' AND Password = 'heng@123';
-SELECT * FROM note_tb WHERE user_id = 3 ORDER BY creation_date DESC
+SELECT * FROM note_tb WHERE user_id = 3 ORDER BY creation_date DESC;
+SELECT username And email FROM user_tb WHERE user_id ='2';
+
+UPDATE user_tb SET username = 'Vattey' WHERE email = 'vatteysoma@gmail.com';

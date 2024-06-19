@@ -23,20 +23,19 @@ public interface UserRepository {
      User getUserByEmail(@Param("email") String email);
 
 
-
-
      @Select("UPDATE user_tb SET Password = #{pass.password} WHERE email = #{email} RETURNING *")
      @ResultMap("authMapper")
      User updatePassword(@Param("pass") ForgetRequest forgetRequest , @Param("email") String email);
 
-     @Select("SELECT * FROM user_tb WHERE user_id = #{id}")
-     @Result(property = "userId",column = "user_id")
-     @Result(property = "username",column = "userName")
+     @Select("SELECT user_id, userName AS username, email FROM user_tb WHERE user_id = #{userId}")
+     @Result(property = "userId", column = "user_id")
+     @Result(property = "username", column = "userName")
      @Result(property = "email", column = "email")
-     UserResponse getUserById(@Param("userId") Integer id);
+     UserResponse getUserById(@Param("userId") Long userId);
 
      @Select("SELECT * FROM user_tb WHERE email = #{email} AND Password = #{password}")
      @ResultMap("authMapper")
      User getUserByEmailandPassword(String email, @Valid String password);
+
 }
 
