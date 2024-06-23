@@ -101,3 +101,4 @@ SELECT * FROM note_tb WHERE user_id = 3 ORDER BY creation_date DESC;
 SELECT username And email FROM user_tb WHERE user_id ='2';
 
 UPDATE user_tb SET username = 'Vattey' WHERE email = 'vatteysoma@gmail.com';
+SELECT user_id, userName AS name, email FROM user_tb WHERE user_id = '6'

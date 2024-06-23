@@ -11,6 +11,7 @@ import com.example._memo_noted_takingapp.config.PasswordConfig;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,11 +24,11 @@ import org.springframework.web.bind.annotation.*;
 public class UserProfileController {
     private final UserProfile userProfile;
 
+
     @PutMapping("/api/memo/notes/Auth/changeUsername")
-    public ResponseEntity<UserResponse> changeUsername(@RequestParam String email, @RequestBody @Valid String changeUsername) {
-        UserResponse userResponse = userProfile.changeUsername(email, changeUsername);
+    public ResponseEntity<UserResponse> changeUsername(@RequestParam @Valid String changeUsername) {
+        UserResponse userResponse = userProfile.changeUsername(changeUsername);
         return ResponseEntity.status(HttpStatus.CREATED).body(userResponse);
     }
-
 
 }

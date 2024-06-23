@@ -130,18 +130,26 @@ public class AuthController {
         return password.matches("^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$");
     }
 
-    @PostMapping("/api/memo/notes/Auth/forget-password/request-otp")
-    public ResponseEntity<String> requestOtp(@RequestParam @Valid String email) throws MessagingException {
+    @PostMapping("/api/memo/notes/Auth/forget-password/request-otp/{email}")
+    public ResponseEntity<?> requestOtp(@PathVariable @Valid String email) throws MessagingException {
         userService.requestOtp(email);
-        return ResponseEntity.status(HttpStatus.OK).body("OTP sent successfully.");
+        return ResponseEntity.status(HttpStatus.OK).body(new APIResponse<>(
+                "OTP sent successfully", null, HttpStatus.OK, new Date()
+        ));
     }
-    @PutMapping("/api/memo/notes/Auth/Forget-password/verify-otp")
+
+    @PutMapping("/api/memo/notes/Auth/forget-password/verify-otp/{email}")
     public ResponseEntity<UserResponse> ForgetPassword(
-            @RequestParam String email,
-            @RequestParam String otpCode,
+            @PathVariable String email,
             @RequestBody @Valid ForgetRequest forgetRequest) throws MessagingException {
-        UserResponse userResponse = userService.verifyOtpForgetPassword(email, otpCode, forgetRequest);
+        UserResponse userResponse = userService.verifyOtpForgetPassword(email,forgetRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(userResponse);
+    }
+
+    @GetMapping("/api/memo/notes/Auth/forget-password/verify-otp/{otpCode}")
+    public ResponseEntity<Boolean> verifyOtpForgetPassword(@PathVariable String otpCode) {
+        boolean response = userService.verifyOtpForgetPassword(otpCode);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
 

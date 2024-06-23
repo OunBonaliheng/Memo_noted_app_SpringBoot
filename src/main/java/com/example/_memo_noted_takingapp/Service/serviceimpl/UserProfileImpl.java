@@ -27,16 +27,14 @@ public class UserProfileImpl implements UserProfile {
     private final UserServiceImpl userServiceImpl;
 
     @Override
-    public UserResponse changeUsername(String email, String changeUsername) {
+    public UserResponse changeUsername(String changeUsername) {
         Long userId = userServiceImpl.getUsernameOfCurrentUser();
-        User user = userRepository.getUserByEmail(email);
+        UserResponse user = userRepository.getUserById(userId);
         if (user == null) {
-            throw new NotFoundException("Email not found");
+            throw new NotFoundException("User not found");
         }
-        System.out.println(changeUsername);
-        user.setName(changeUsername);
-        User updatedUser = userProfileRepository.updateUser(email, user);
-        return modelMapper.map(updatedUser, UserResponse.class);
+        userProfileRepository.updateUsername(userId, changeUsername);
+        return modelMapper.map(user, UserResponse.class);
     }
 }
 

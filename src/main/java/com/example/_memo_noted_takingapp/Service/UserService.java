@@ -26,9 +26,10 @@ public interface UserService {
     UserResponse getUserDetailsById(Long userId);
 
 
-    String requestOtp(String email) throws MessagingException;
+    Boolean requestOtp(String email) throws MessagingException;
 
-    UserResponse verifyOtpForgetPassword(String email, String otpCode,ForgetRequest forgetRequest) throws MessagingException;
+    UserResponse verifyOtpForgetPassword(String email,ForgetRequest forgetRequest) throws MessagingException;
 
 
+    boolean verifyOtpForgetPassword(String otpCode);
 }

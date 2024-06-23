@@ -173,7 +173,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String requestOtp(String email) throws MessagingException {
+    public Boolean requestOtp(String email) throws MessagingException {
         User user = userRepository.getUserByEmail(email);
         if (user == null) throw new NotFoundException("User with " + email + " not found.");
         String newOtpCode = otpUtil.generateOtp();
@@ -188,20 +188,19 @@ public class UserServiceImpl implements UserService {
         existingOtp.setIssuedAt(new Timestamp(System.currentTimeMillis()));
         existingOtp.setExpirationTime(calculateExpirationTime());
         otpRepository.updateOtp(existingOtp);
-        return "OTP sent successfully.";
-
+        return true;
     }
 
     @Override
-    public UserResponse verifyOtpForgetPassword(String email, String otpCode, ForgetRequest forgetRequest) {
+    public UserResponse verifyOtpForgetPassword(String email, ForgetRequest forgetRequest) {
         User user = userRepository.getUserByEmail(email);
         if (user == null) {
             throw new NotFoundException("Email not found");
         }
-        Otp otp = otpRepository.getLatestOtpByCodeAndVerified(otpCode);
-        if (otp == null || !otp.getOtpCode().equals(otpCode) || otp.getExpirationTime().before(new Timestamp(System.currentTimeMillis()))) {
-            throw new InvalidInputException("Invalid or expired OTP");
-        }
+//        Otp otp = otpRepository.getLatestOtpByCodeAndVerified(otpCode);
+//        if (otp == null || !otp.getOtpCode().equals(otpCode) || otp.getExpirationTime().before(new Timestamp(System.currentTimeMillis()))) {
+//            throw new InvalidInputException("Invalid or expired OTP");
+//        }
         // Validate the new password and confirm password
         if (!forgetRequest.getPassword().equals(forgetRequest.getConfirmPassword()) || forgetRequest.getPassword().length() < 8) {
             throw new InvalidInputException("Your confirm password does not match with your password or password is too short");
@@ -212,6 +211,15 @@ public class UserServiceImpl implements UserService {
         return modelMapper.map(userPassword, UserResponse.class);
     }
 
+    @Override
+    public boolean verifyOtpForgetPassword(String  otpCode) {
+        System.out.println("OTP code is: " + otpCode);
+        Otp otp = otpRepository.getLatestOtpByCodeAndVerified(otpCode);
+        if (otp == null || !otp.getOtpCode().equals(otpCode) || otp.getExpirationTime().before(new Timestamp(System.currentTimeMillis()))) {
+            throw new InvalidInputException("Invalid or expired OTP");
+        }
+        return true;
+    }
 
 
 }

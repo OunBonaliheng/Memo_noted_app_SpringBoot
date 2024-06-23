@@ -27,9 +27,9 @@ public interface UserRepository {
      @ResultMap("authMapper")
      User updatePassword(@Param("pass") ForgetRequest forgetRequest , @Param("email") String email);
 
-     @Select("SELECT user_id, userName AS username, email FROM user_tb WHERE user_id = #{userId}")
+     @Select("SELECT user_id,userName , email FROM user_tb WHERE user_id = #{userId}")
      @Result(property = "userId", column = "user_id")
-     @Result(property = "username", column = "userName")
+     @Result(property = "name", column = "userName")
      @Result(property = "email", column = "email")
      UserResponse getUserById(@Param("userId") Long userId);
 
