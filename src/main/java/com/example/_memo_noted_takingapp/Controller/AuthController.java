@@ -78,8 +78,8 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.OK).body(message);
     }
 
-    @PutMapping("/api/memo/notes/Auth/reset-password")
-    public ResponseEntity<UserResponse> resetPassword(@RequestBody @Valid ForgetRequest forgetRequest, @RequestParam @Valid String email) {
+    @PutMapping("/api/memo/notes/Auth/reset-password/{email}")
+    public ResponseEntity<UserResponse> resetPassword(@RequestBody @Valid ForgetRequest forgetRequest, @PathVariable @Valid String email) {
         if (!isValidPassword(forgetRequest.getPassword())) throw new InvalidInputException("Password must be at least 8 characters long and contain at least one digit, one letter, and one special character.");
         UserResponse user  = userService.ResetPassword(forgetRequest, email);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
@@ -118,8 +118,8 @@ public class AuthController {
                 "Get OTP By Code",message,HttpStatus.OK,new Date()
         ));
     }
-    @GetMapping("/api/memo/notes/Auth/getUserDetailsById")
-    public ResponseEntity<APIResponse<UserResponse>> getUserDetailsById(@RequestParam @Positive Long userId) {
+    @GetMapping("/api/memo/notes/Auth/getUserDetailsById/{userId}")
+    public ResponseEntity<APIResponse<UserResponse>> getUserDetailsById(@PathVariable @Positive Long userId) {
         UserResponse userResponse = userService.getUserDetailsById(userId);
         return ResponseEntity.status(HttpStatus.OK).body(new APIResponse<>(
                 "Get Username and Email by User ID", userResponse, HttpStatus.OK, new Date()

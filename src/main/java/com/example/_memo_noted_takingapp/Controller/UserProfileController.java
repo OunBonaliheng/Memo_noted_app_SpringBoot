@@ -10,6 +10,7 @@ import com.example._memo_noted_takingapp.Service.UserService;
 import com.example._memo_noted_takingapp.config.PasswordConfig;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
@@ -25,10 +26,15 @@ public class UserProfileController {
     private final UserProfile userProfile;
 
 
-    @PutMapping("/api/memo/notes/Auth/changeUsername")
-    public ResponseEntity<UserResponse> changeUsername(@RequestParam @Valid String changeUsername) {
+    @PutMapping("/api/memo/notes/Auth/changeUsername/{changeUsername}")
+    public ResponseEntity<UserResponse> changeUsername(@PathVariable @Valid String changeUsername) {
         UserResponse userResponse = userProfile.changeUsername(changeUsername);
         return ResponseEntity.status(HttpStatus.CREATED).body(userResponse);
+    }
+    @GetMapping("/api/memo/notes/Auth/getUserDetails")
+    public ResponseEntity<UserResponse> getUserDetailsById() {
+        UserResponse userResponse = userProfile.getUserDetails();
+        return ResponseEntity.status(HttpStatus.OK).body(userResponse);
     }
 
 }

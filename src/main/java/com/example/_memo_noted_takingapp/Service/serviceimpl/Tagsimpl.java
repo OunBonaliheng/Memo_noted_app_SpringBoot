@@ -3,10 +3,14 @@ package com.example._memo_noted_takingapp.Service.serviceimpl;
 import com.example._memo_noted_takingapp.Exception.InvalidInputException;
 import com.example._memo_noted_takingapp.Exception.NotFoundException;
 import com.example._memo_noted_takingapp.Model.Tags;
+import com.example._memo_noted_takingapp.Model.User;
 import com.example._memo_noted_takingapp.Model.dto.Request.NotePaperRequest;
 import com.example._memo_noted_takingapp.Model.dto.Request.TagsRequest;
 import com.example._memo_noted_takingapp.Model.dto.Response.TagResponse;
+import com.example._memo_noted_takingapp.Model.dto.Response.UserResponse;
 import com.example._memo_noted_takingapp.Repositority.TagsRepo;
+import com.example._memo_noted_takingapp.Repositority.UserProfileRepository;
+import com.example._memo_noted_takingapp.Repositority.UserRepository;
 import com.example._memo_noted_takingapp.Service.TagsService;
 import com.example._memo_noted_takingapp.config.EncryptionUtill;
 import com.example._memo_noted_takingapp.config.SecretKeyGenerator;
@@ -27,6 +31,9 @@ public class Tagsimpl implements TagsService {
     private final EncryptionUtill encryptionUtill;
     private final SecretKeyGenerator secretKeyGenerator;
     private final String secretKey ="${encryption.secret.key}";
+    private final UserServiceImpl userServiceImpl;
+    private final UserRepository userRepository;
+    private final UserProfileRepository userProfileRepository;
 
 
     @Override
@@ -155,5 +162,22 @@ public class Tagsimpl implements TagsService {
                 throw new RuntimeException("Error while decrypting note content", e);
             }
         }).collect(Collectors.toList());
+    }
+
+
+    @Override
+    public TagResponse updateTagByTagName(Integer id, TagsRequest tagName) {
+        Long userId = userServiceImpl.getUsernameOfCurrentUser();
+        UserResponse user = userRepository.getUserById(userId);
+        if (user == null) {
+            throw new NotFoundException("User not found");
+        }
+        try {
+            String encryptedTitle = encryptionUtill.encrypt(tagName.getTagName(), "${encryption.secret.key}");
+            Tags updatedTag = tagsRepo.updateTagName(id, encryptedTitle, userId);
+            return modelMapper.map(updatedTag, TagResponse.class);
+        } catch (Exception e) {
+            throw new RuntimeException("Error while encrypting tag name", e);
+        }
     }
 }

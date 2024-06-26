@@ -20,6 +20,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
         scheme = "bearer",
         in = SecuritySchemeIn.HEADER
 )
+
 public class MemoNotedTakingAppApplication {
 
     public static void main(String[] args)  {

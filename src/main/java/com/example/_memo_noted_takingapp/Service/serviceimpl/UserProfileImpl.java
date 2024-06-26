@@ -36,5 +36,16 @@ public class UserProfileImpl implements UserProfile {
         userProfileRepository.updateUsername(userId, changeUsername);
         return modelMapper.map(user, UserResponse.class);
     }
+
+    @Override
+    public UserResponse getUserDetails() {
+        Long userId = userServiceImpl.getUsernameOfCurrentUser();
+        UserResponse user = userRepository.getUserById(userId);
+        if (user == null) {
+            throw new NotFoundException("User not found");
+        }
+        userProfileRepository.getUserDetails(userId);
+        return modelMapper.map(user, UserResponse.class);
+    }
 }
 

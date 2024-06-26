@@ -20,4 +20,6 @@ public interface TagsService {
     String deleteTag(Integer id);
 
     List<Tags> getTagsByname(String tagname);
+
+    TagResponse updateTagByTagName(Integer id, TagsRequest tagName);
 }

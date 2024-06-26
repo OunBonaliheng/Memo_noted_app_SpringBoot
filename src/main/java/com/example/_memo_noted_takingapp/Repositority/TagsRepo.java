@@ -2,6 +2,7 @@ package com.example._memo_noted_takingapp.Repositority;
 
 import com.example._memo_noted_takingapp.Model.Tags;
 import com.example._memo_noted_takingapp.Model.dto.Request.TagsRequest;
+import com.example._memo_noted_takingapp.Model.dto.Response.TagResponse;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -76,4 +77,7 @@ public interface TagsRepo {
     @ResultMap("TagMapper")
     Tags findTagsByTagName(@Param("tagName") String tagName, @Param("userId") Long userId);
 
+    @Select("UPDATE tags_tb SET tag_name = #{tagName} WHERE tag_id = #{id} AND user_id = #{userId} RETURNING *")
+    @ResultMap("TagMapper")
+    Tags updateTagName(@Param("id") Integer id, @Param("tagName") String tagName, @Param("userId") Long userId);
 }

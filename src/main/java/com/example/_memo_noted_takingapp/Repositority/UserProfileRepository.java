@@ -15,4 +15,8 @@ public interface UserProfileRepository {
 
     @Update("UPDATE user_tb SET userName = #{changeUsername} WHERE user_id = #{userId}")
     void updateUsername(@Param("userId") Long userId, @Param("changeUsername") String changeUsername);
+
+    @Select("SELECT * FROM user_tb WHERE user_id = #{userId}")
+    @ResultMap("UserMapper")
+    void getUserDetails(Long userId);
 }

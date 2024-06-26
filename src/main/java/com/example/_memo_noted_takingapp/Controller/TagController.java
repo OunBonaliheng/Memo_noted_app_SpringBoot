@@ -9,6 +9,7 @@ import com.example._memo_noted_takingapp.Service.TagsService;
 import com.example._memo_noted_takingapp.Service.UserService;
 import com.example._memo_noted_takingapp.Service.serviceimpl.UserServiceImpl;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -84,5 +85,11 @@ public class TagController {
         String message =  tagsService.deleteTag(id);
         System.out.println(message);
         return ResponseEntity.status(HttpStatus.OK).body("successfully Tag deleted");
+    }
+
+    @PutMapping("/api/memo/tags/tagId/{id}")
+    public ResponseEntity<TagResponse> updateTagName(@PathVariable Integer id, @RequestBody @Valid TagsRequest tagName) {
+        TagResponse tags = tagsService.updateTagByTagName(id, tagName);
+        return ResponseEntity.status(HttpStatus.OK).body(tags);
     }
 }
